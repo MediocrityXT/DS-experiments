@@ -3,7 +3,7 @@
 #include <typeinfo>
 #include <stdlib.h>
 #define MAXNUM 10
-using namespace std;
+
 
 typedef struct SeqList
 {
@@ -13,7 +13,7 @@ typedef struct SeqList
 void init(seqPtr s){
     s->elem=(int *)malloc(MAXNUM*sizeof(int));
     s->length=0;
-    if(!s->elem)cout<<"error!\ns->elem:"<<s->elem<<endl;
+    if(!s->elem)std::cout<<"error!\ns->elem:"<<s->elem<<std::endl;
 };
 int CheckValue(seqPtr s,int value){
     for (int i = 0; i < s->length; i++)
