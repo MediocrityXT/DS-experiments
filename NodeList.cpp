@@ -33,7 +33,8 @@ public:
         //automatically create a list with a headNode
     };
     ~NodeList(){
-        nodePtr target = L->next;
+        nodePtr target = L;
+        //headNode need to be free as well
         while(target!=NULL)
         {
             nodePtr p=target->next;
@@ -44,7 +45,9 @@ public:
         
         getchar();
     };
-    
+    nodePtr ListPointer(){
+        return L;
+    }
     nodePtr LocateValue(int value){
         nodePtr p=L->next;
         int cnt=0;
@@ -112,18 +115,38 @@ public:
         
     }
     void unionList(nodePtr la,nodePtr lb){
-        nodePtr pa = la;
-        nodePtr pb = lb;
+        nodePtr preA = la;
+        nodePtr pb = lb->next;
         //merge lb into la
         int sum = la->data+lb->data;
         while (la->data!=sum)
         {
-            //working on pa->next and pb->next two Nodes
-            if(pa->next!=NULL && pb->next!=NULL){
-                if(pa->next->data >= pb->next->data){
+            //comparing on pa and pb two Nodes
+            nodePtr pa = preA->next;
+            if(pa!=NULL && pb!=NULL){
+                if(pa->data >= pb->data){
+                    nodePtr breakpoint =pb->next;
+                    //insert pb in front of pa
+                    preA->next=pb;
+                    pb->next=pa;
 
+                    preA=preA->next;
+                    pb=breakpoint;
                 }else{
-                    
+                    //moving pa
+                    preA=preA->next;
+                }
+            }else{
+                if(!pa){
+                    //put rest of lb after la
+                    preA->next=pb;
+                    la->data=sum;
+                    lb->next=NULL;
+                }
+                if(!pb){
+                    //finish
+                    la->data=sum;
+                    lb->next=NULL;
                 }
             }
         }
@@ -131,13 +154,13 @@ public:
     }
     void display(){
         nodePtr addr = L;
-        std::cout << "Count:" << L->data <<" || "<< addr << std::endl;
-        std::cout << "----------------------" << std::endl;
+        std::cout << "Count:" << L->data <<" || "<< addr <<"\n"<< std::endl;
         for (int i = 0; i < L->data; i++)
         {
             addr=addr->next;
             std::cout <<"No."<<i+1<<" :"<<addr->data <<" || "<< addr << std::endl;
         }
+        std::cout << "----------------------" << std::endl;
     }
 };
 
@@ -145,17 +168,20 @@ int main(int argc, const char** argv) {
     NodeList L;
     L.insert(1,1);
     L.insert(3,2);
-    L.insert(4,1);
-    L.insert(5,4);
+    L.insert(4,3);
+    L.insert(4,4);
     L.insert(6,5);
     L.insert(7,6);
 
-    L.deleteNode(1);
-    NodeList B = L;
     //L.LocateValue(2);
-    L.reverse();
-    NodeList U;
     L.display();
+    NodeList B;
+    B.insert(1,1);
+    B.insert(2,2);
+    B.insert(5,3);
+    B.display();
+    L.unionList(B.ListPointer(),L.ListPointer());
+    B.display();
    
     getchar();
     return 0;
