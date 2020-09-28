@@ -3,110 +3,140 @@
 #include <typeinfo>
 #include <stdlib.h>
 
-class node
-{
-private:
-    node * next;
-    int value;
-public:
-    node(){
-        value=NULL;
-    };
-    node(int x){
-        value=x;
-    };
-    ~node();
-};
-
-
-
 class NodeList
 {
 private:
-    typedef struct nodelist{
-        nodelist * next;
-        int value;
-    }* nodelistPtr;
+    typedef struct node{
+        int data;
+        node * next;
+    }* nodePtr ,** LinkList;
+    //What is the meaning of LinkList?
 
-    nodelist headNode;
-    void recursivelyFreeNext(nodelistPtr target){
-        if(!target->next){
-            recursivelyFreeNext(target->next);
-        }else{
-            std::cout << "target:" <<target<< std::endl;
-            //free(target);
-            //delete [] target;
-            //??????????????????????????????????????????????????????????????????????
-
-            //how to free the memory allocated
-        }
-    };
+    nodePtr L;
+    //L is the head pointer
+    nodePtr createNode(){
+        nodePtr headNode=(node*)malloc(sizeof(node));
+        headNode->next=NULL;
+        headNode->data=0;
+        return headNode;
+    }
+    nodePtr createNode(int x){
+        nodePtr newNode=(node*)malloc(sizeof(node));
+        newNode->next=NULL;
+        newNode->data=x;
+        L->data++;
+        return newNode;    
+    }
 public:
     NodeList(){
-        std::cout << "sizeof(nodelist):" <<sizeof(nodelist)<< std::endl;
-        nodelistPtr np=(nodelist*)malloc(sizeof(nodelist));
-        headNode=*np;
-        headNode.next=NULL;
-        headNode.value=0;
-        //headNode.value is the count of all values
+        L= createNode();
+        //automatically create a list with a headNode
     };
     ~NodeList(){
-        nodelistPtr target = &headNode;
-        for (int i = 0; i <= headNode.value; i++)
+        nodePtr target = L->next;
+        while(target!=NULL)
         {
-            
+            nodePtr p=target->next;
+            std::cout << "freed  " <<target<< std::endl;
+            free(target);
+            target=p;
         }
         
         getchar();
     };
-    nodelistPtr findNext(nodelistPtr p){
-        return p->next;
+    
+    nodePtr LocateValue(int value){
+        nodePtr p=L->next;
+        int cnt=0;
+        while (p!=NULL)
+        {
+            cnt++;
+            if(p->data == value){
+                std::cout <<value << " position at: " <<cnt<< std::endl;
+                return p;
+            }
+            p=p->next;
+        }
+        std::cout << "MISSING Value" << std::endl;
+        return NULL;
     };
-    nodelistPtr LocateIndex(int index){
-        //index is the position of the value in all values
-        if (index<0 ||index > headNode.value)
+    nodePtr LocatePos(int pos){
+        //pos is the position of the data in all datas
+        if (pos < 0 ||pos > L->data)
         {
             std::cout << "Not in list" << std::endl;
             return NULL;
         }
         else
         {
-            nodelistPtr target = &headNode;
-            for (int i = 0; i < index; i++)
+            nodePtr target = L;
+            for (int i = 0; i < pos; i++)
             {
-                target=findNext(target);
+                target=target->next;
             }
             return target;
         }      
     };
-    void insert(int value,int index){
-        nodelistPtr newNode = (nodelistPtr)malloc(sizeof(nodelist));
-        std::cout << "newNode:" <<newNode<< std::endl;
-        //nodelist *newNode = new nodelist[sizeof(nodelist)];
-        //??????????????????????????????????????????????????????????????????????
-
-        //new or malloc() ; neither can be freed in the ~NodeList()
-
-        newNode->value=value;
-        headNode.value++;
-        nodelistPtr lastNode=LocateIndex(index-1); //find the front node
+    void insert(int data,int pos){
+        nodePtr newNode=createNode(data);      
+        nodePtr lastNode=LocatePos(pos-1); //find the front node
         newNode->next=lastNode->next;
         lastNode->next=newNode; //write in the address of new node
     };
-    void deleteNode(int index){
-        nodelistPtr lastNode = LocateIndex(index-1);
-        nodelistPtr thisNode = lastNode->next;
+    void deleteNode(int pos){
+        nodePtr lastNode = LocatePos(pos-1);
+        nodePtr thisNode = lastNode->next;
         lastNode->next = thisNode->next;
-        headNode.value--;
+        free(thisNode);
+        L->data--;
+    };
+    void reverse(){
+        nodePtr newL=L;
+
+        //start from the first node
+        nodePtr thisNode=L->next;
+        nodePtr nextNode;
+        
+        for (int i = 0; i < L->data ; i++)
+        {
+            nextNode=thisNode->next;
+            if(i==0){
+                L->next=NULL;
+            }
+            //insert
+            thisNode->next=L->next;
+            L->next=thisNode;
+            //no need to change L->data
+            thisNode=nextNode;
+        }
+        
+    }
+    void unionList(nodePtr la,nodePtr lb){
+        nodePtr pa = la;
+        nodePtr pb = lb;
+        //merge lb into la
+        int sum = la->data+lb->data;
+        while (la->data!=sum)
+        {
+            //working on pa->next and pb->next two Nodes
+            if(pa->next!=NULL && pb->next!=NULL){
+                if(pa->next->data >= pb->next->data){
+
+                }else{
+                    
+                }
+            }
+        }
+        
     }
     void display(){
-        nodelistPtr addr = &headNode;
-        std::cout << "Count:" << headNode.value <<" || "<< addr << std::endl;
+        nodePtr addr = L;
+        std::cout << "Count:" << L->data <<" || "<< addr << std::endl;
         std::cout << "----------------------" << std::endl;
-        for (int i = 0; i < headNode.value; i++)
+        for (int i = 0; i < L->data; i++)
         {
             addr=addr->next;
-            std::cout <<"No."<<i+1<<" :"<<addr->value <<" || "<< addr << std::endl;
+            std::cout <<"No."<<i+1<<" :"<<addr->data <<" || "<< addr << std::endl;
         }
     }
 };
@@ -116,8 +146,15 @@ int main(int argc, const char** argv) {
     L.insert(1,1);
     L.insert(3,2);
     L.insert(4,1);
-    L.insert(1,4);
-    L.deleteNode(4);
+    L.insert(5,4);
+    L.insert(6,5);
+    L.insert(7,6);
+
+    L.deleteNode(1);
+    NodeList B = L;
+    //L.LocateValue(2);
+    L.reverse();
+    NodeList U;
     L.display();
    
     getchar();

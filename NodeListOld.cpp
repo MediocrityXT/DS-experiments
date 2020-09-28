@@ -15,19 +15,6 @@ private:
 
     nodelist headNode;
 
-    //递归函数不需要 直接设立临时指针保存下一个结点的位置就可以
-    void recursivelyFreeNext(nodelistPtr target){
-        if(!target->next){
-            recursivelyFreeNext(target->next);
-        }else{
-            std::cout << "target:" <<target<< std::endl;
-            //free(target);
-            //delete [] target;
-            //??????????????????????????????????????????????????????????????????????
-
-            //how to free the memory allocated
-        }
-    };
 public:
     NodeList(){
         std::cout << "sizeof(nodelist):" <<sizeof(nodelist)<< std::endl;
@@ -38,10 +25,13 @@ public:
         //headNode.value is the count of all values
     };
     ~NodeList(){
-        nodelistPtr target = &headNode;
-        for (int i = 0; i <= headNode.value; i++)
+        nodelistPtr target = headNode.next;
+        while(target!=NULL)
         {
-            
+            nodelistPtr p=target->next;
+            std::cout << "target  " <<target<< std::endl;
+            free(target);
+            target=p;
         }
         
         getchar();
@@ -67,13 +57,7 @@ public:
         }      
     };
     void insert(int value,int index){
-        nodelistPtr newNode = (nodelistPtr)malloc(sizeof(nodelist));
-        std::cout << "newNode:" <<newNode<< std::endl;
-        //nodelist *newNode = new nodelist[sizeof(nodelist)];
-        //??????????????????????????????????????????????????????????????????????
-
-        //new or malloc() ; neither can be freed in the ~NodeList()
-
+        nodelistPtr newNode = (nodelistPtr)malloc(sizeof(nodelist));      
         newNode->value=value;
         headNode.value++;
         nodelistPtr lastNode=LocateIndex(index-1); //find the front node
@@ -84,6 +68,7 @@ public:
         nodelistPtr lastNode = LocateIndex(index-1);
         nodelistPtr thisNode = lastNode->next;
         lastNode->next = thisNode->next;
+        free(thisNode);
         headNode.value--;
     }
     void display(){
