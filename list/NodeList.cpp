@@ -94,8 +94,6 @@ public:
         L->data--;
     };
     void reverse(){
-        nodePtr newL=L;
-
         //start from the first node
         nodePtr thisNode=L->next;
         nodePtr nextNode;
@@ -106,7 +104,7 @@ public:
             if(i==0){
                 L->next=NULL;
             }
-            //insert
+            //update L->next to the last node
             thisNode->next=L->next;
             L->next=thisNode;
             //no need to change L->data
@@ -172,9 +170,10 @@ int main(int argc, const char** argv) {
     L.insert(4,4);
     L.insert(6,5);
     L.insert(7,6);
-
-    //L.LocateValue(2);
     L.display();
+    L.reverse();
+    L.display();
+    /*
     NodeList B;
     B.insert(1,1);
     B.insert(2,2);
@@ -182,7 +181,7 @@ int main(int argc, const char** argv) {
     B.display();
     L.unionList(B.ListPointer(),L.ListPointer());
     B.display();
-   
+   */
     getchar();
     return 0;
 }
