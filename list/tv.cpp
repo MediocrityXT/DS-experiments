@@ -8,7 +8,9 @@ public:
         int num;
         struct Node * next;
     }node,*nodePtr;
+    
     Node * head = NULL;
+
     void Store(Node * head,float n,int m){
         Node * p = head;
         Node * last = NULL;
@@ -59,7 +61,7 @@ public:
 int main(int argc, const char** argv) {
     tv a;
     
-    a.Store(a.head,0.9,10);
+    a.Store(a.head,1.0,10);
     tv::Node * p = a.head;
     while (p!=NULL)
     {
