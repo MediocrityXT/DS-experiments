@@ -4,7 +4,7 @@ class queue
     
 public:
     typedef struct Node{
-        int code;
+        int elem;
         struct Node * next;
     }node;
     
@@ -31,12 +31,12 @@ public:
     void Enqueue(Node * &rear, int x){
     	if(rear == NULL){
     		Node * p = new Node;
-    		p->code = x;
+    		p->elem = x;
     		p->next = p;
     		rear = p;
 		}else{
 			Node * p = new Node;
-    		p->code = x;
+    		p->elem = x;
     		p->next = rear->next;
     		rear->next = p;
     		rear = p;
@@ -58,11 +58,11 @@ public:
 	}
 
     void ShowList(Node * head){
-        std::cout << "code:"<< head->code << std::endl;
+        std::cout << "elem:"<< head->elem << std::endl;
         Node * p = head->next;
         while (p!=head)
         {
-            std::cout << "code:"<<p->code << std::endl;
+            std::cout << "elem:"<<p->elem << std::endl;
             p=p->next;
         }
     }
