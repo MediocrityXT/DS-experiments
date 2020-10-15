@@ -64,7 +64,7 @@ public:
         return NULL;
     };
     nodePtr LocatePos(int pos){
-        //pos is the position of the data in all datas
+        //pos is the position of the data in all data
         if (pos < 0 ||pos > L->data)
         {
             std::cout << "Not in list" << std::endl;
